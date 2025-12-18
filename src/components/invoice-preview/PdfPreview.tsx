@@ -34,7 +34,7 @@ export default function PdfPreview() {
                 setPreviewUrl(objectUrl);
             } catch (err) {
                 console.error("Error generating PDF preview:", err);
-                setError("Failed to generate PDF preview. Please try again.");
+                setError("Gagal membuat pratinjau PDF. Silakan coba lagi.");
             } finally {
                 setIsLoading(false);
             }
@@ -54,12 +54,10 @@ export default function PdfPreview() {
     }, [data]);
 
     return (
-        <div className="border rounded p-6 bg-white">
-            <h2 className="text-lg font-bold mb-4">PDF Preview</h2>
+        <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border">
+            <h2 className="text-lg font-bold mb-3">Pratinjau PDF</h2>
 
-            {isLoading && (
-                <p className="text-gray-500">Generating preview...</p>
-            )}
+            {isLoading && <p className="text-gray-500">Membuat pratinjau...</p>}
 
             {error && <p className="text-red-500">{error}</p>}
 
@@ -71,7 +69,7 @@ export default function PdfPreview() {
                     height: "600px",
                     display: isLoading ? "none" : "block",
                 }}
-                title="PDF Preview"
+                title="Pratinjau PDF"
             />
         </div>
     );

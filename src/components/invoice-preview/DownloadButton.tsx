@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import InvoiceTemplate from "@/components/pdf-templates/InvoiceTemplate";
 import ReceiptTemplate from "@/components/pdf-templates/ReceiptTemplate";
+import Button from "@/components/ui/Button";
 
 export default function DownloadButton() {
     const { data } = useInvoiceStore();
@@ -26,11 +27,11 @@ export default function DownloadButton() {
     };
 
     return (
-        <button
+        <Button
             onClick={handleDownload}
-            className="bg-green-600 text-white px-4 py-2"
+            className="bg-green-600 hover:bg-green-700"
         >
-            Download PDF
-        </button>
+            Unduh PDF
+        </Button>
     );
 }

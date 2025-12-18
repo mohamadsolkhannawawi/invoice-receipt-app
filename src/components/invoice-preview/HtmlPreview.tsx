@@ -8,29 +8,44 @@ export default function HtmlPreview() {
     const { data } = useInvoiceStore();
     const result = calculateInvoiceTotal(data);
 
+    const title = data.documentType === "INVOICE" ? "FAKTUR" : "KUITANSI";
+
     return (
-        <div className="border rounded p-6 bg-white min-h-96">
-            <h2 className="text-xl font-bold mb-4">{data.documentType}</h2>
+        <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border max-w-[380px] w-full">
+            <h2 className="text-lg font-bold mb-3">{title}</h2>
 
-            <div className="mb-4">
-                <p className="font-semibold">
-                    {data.brand.name || "Brand Name"}
-                </p>
-                <p>{data.brand.location}</p>
+            <div className="mb-3 flex items-center gap-3">
+                {data.brand.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                        src={data.brand.logo}
+                        alt="Logo"
+                        className="w-12 h-12 object-contain"
+                    />
+                ) : (
+                    <div className="w-12 h-12" />
+                )}
+
+                <div>
+                    <p className="font-semibold">
+                        {data.brand.name || "Nama Brand"}
+                    </p>
+                    <p className="text-sm text-muted">{data.brand.location}</p>
+                </div>
             </div>
 
-            <div className="mb-4">
-                <p className="font-semibold">Bill To</p>
-                <p>{data.client.name || "Client Name"}</p>
+            <div className="mb-3">
+                <p className="font-semibold">Ditujukan Kepada</p>
+                <p>{data.client.name || "Nama Klien"}</p>
             </div>
 
-            <table className="w-full text-sm border mb-4">
+            <table className="w-full text-sm mb-3">
                 <thead>
                     <tr className="border-b bg-gray-50">
-                        <th className="text-left p-2">Item</th>
-                        <th className="p-2">Qty</th>
-                        <th className="p-2">Price</th>
-                        <th className="p-2">Total</th>
+                        <th className="text-left p-2">Deskripsi</th>
+                        <th className="p-2">Jumlah</th>
+                        <th className="p-2">Harga</th>
+                        <th className="p-2">Nominal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,7 +55,7 @@ export default function HtmlPreview() {
                                 colSpan={4}
                                 className="text-center p-4 text-gray-400"
                             >
-                                No items added
+                                Belum ada item
                             </td>
                         </tr>
                     ) : (
@@ -66,8 +81,8 @@ export default function HtmlPreview() {
 
             <div className="text-right space-y-1">
                 <p>Subtotal: {formatCurrency(result.subtotal)}</p>
-                <p>Discount: -{formatCurrency(result.discountAmount)}</p>
-                <p>Tax: {formatCurrency(result.taxAmount)}</p>
+                <p>Diskon: -{formatCurrency(result.discountAmount)}</p>
+                <p>Pajak: {formatCurrency(result.taxAmount)}</p>
                 <p className="font-bold text-lg">
                     Total: {formatCurrency(result.total)}
                 </p>
