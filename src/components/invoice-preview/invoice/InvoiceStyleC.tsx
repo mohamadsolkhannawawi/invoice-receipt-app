@@ -3,18 +3,24 @@
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import { formatCurrency } from "@/lib/utils";
+import Badge from "@/components/ui/Badge";
 
 export default function InvoiceStyleC() {
     const { data } = useInvoiceStore();
     const result = calculateInvoiceTotal(data);
 
     return (
-        <div className="p-6 border-dashed border-2 min-h-96">
-            <h2 className="uppercase tracking-widest mb-6">Invoice</h2>
+        <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border max-w-[380px] w-full">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="uppercase tracking-widest">FAKTUR</h2>
+                <Badge color={data.status === "PAID" ? "success" : "info"}>
+                    {data.status === "PAID" ? "Lunas" : "Belum Dibayar"}
+                </Badge>
+            </div>
 
-            <p className="text-sm">Items: {data.items.length}</p>
+            <p className="text-sm">Jumlah item: {data.items.length}</p>
 
-            <p className="mt-8 text-2xl font-bold">
+            <p className="mt-6 text-2xl font-bold">
                 {formatCurrency(result.total)}
             </p>
         </div>
