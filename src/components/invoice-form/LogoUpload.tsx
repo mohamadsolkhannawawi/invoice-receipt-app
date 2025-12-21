@@ -1,87 +1,90 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { fileToDataUrl } from "@/lib/utils";
+import { Upload, Trash2 } from "lucide-react";
 
-const MAX_SIZE = 1 * 1024 * 1024; // 1MB
+const MAX_SIZE = 1 * 1024 * 1024;
 
 export default function LogoUpload() {
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    const { data, updateField } = useInvoiceStore();
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { data, updateField } = useInvoiceStore();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleClick = () => {
-        setError("");
-        inputRef.current?.click();
-    };
+  const onFile = async (file?: File | null) => {
+    if (!file) return;
 
-    const onFile = async (file?: File | null) => {
-        setError("");
-        if (!file) return;
-        // validate type
-        if (!["image/png", "image/jpeg"].includes(file.type)) {
-            setError("File tidak valid. Gunakan PNG atau JPG.");
-            return;
-        }
-        if (file.size > MAX_SIZE) {
-            setError("Ukuran file melebihi 1MB. Pilih file lebih kecil.");
-            return;
-        }
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
+      setError("Gunakan PNG atau JPG");
+      return;
+    }
 
-        try {
-            setLoading(true);
-            const dataUrl = await fileToDataUrl(file);
-            // Save only the data URL (base64) into state
-            updateField("brand", { ...data.brand, logo: dataUrl });
-        } catch (e) {
-            console.error(e);
-            setError("Terjadi kesalahan saat membaca file.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (file.size > MAX_SIZE) {
+      setError("Maksimal 1MB");
+      return;
+    }
 
-    return (
-        <div className="space-y-2">
-            <label className="text-sm font-medium">Logo Brand</label>
+    setError("");
+    setLoading(true);
+    const dataUrl = await fileToDataUrl(file);
+    updateField("brand", { ...data.brand, logo: dataUrl });
+    setLoading(false);
+  };
 
-            <div className="flex items-center gap-3">
-                <input
-                    ref={inputRef}
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    className="hidden"
-                    onChange={(e) => onFile(e.target.files?.[0] ?? null)}
-                />
+  const removeLogo = () => {
+    updateField("brand", { ...data.brand, logo: "" });
+  };
 
-                <Button onClick={handleClick} variant="secondary">
-                    {loading ? "Memproses..." : "Unggah Logo"}
-                </Button>
+  const hasLogo = Boolean(data.brand.logo);
 
-                {data.brand.logo ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                        src={data.brand.logo}
-                        alt="Logo"
-                        className="w-12 h-12 object-contain"
-                    />
-                ) : (
-                    <div className="text-sm text-muted">Tidak ada logo</div>
-                )}
-            </div>
+  return (
+    <div className={hasLogo ? "flex items-center gap-3" : "space-y-2"}>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/png, image/jpeg"
+        className="hidden"
+        onChange={(e) => onFile(e.target.files?.[0])}
+      />
 
-            <p className="text-xs text-muted">
-                Format PNG atau JPG, maksimal 1MB
-            </p>
+      {/* Upload Button */}
+      <Button
+        variant="secondary"
+        onClick={() => inputRef.current?.click()}
+        className="flex items-center gap-2 text-sm px-3 py-1.5"
+      >
+        <Upload className="w-3 h-3" />
+        {loading ? "Uploading..." : "Upload Logo"}
+      </Button>
 
-            {error && (
-                <p className="text-sm text-red-600" role="alert">
-                    {error}
-                </p>
-            )}
+      {/* Logo Preview + Remove */}
+      {hasLogo && (
+        <div className="relative">
+          <Image
+            src={data.brand.logo!}
+            alt="Logo"
+            width={48}
+            height={48}
+            unoptimized
+            className="rounded border object-contain"
+          />
+
+          <button
+            type="button"
+            onClick={removeLogo}
+            className="absolute -top-2 -right-2 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+            title="Hapus logo"
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
         </div>
-    );
+      )}
+
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
 }

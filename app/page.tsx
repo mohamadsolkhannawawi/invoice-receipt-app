@@ -1,119 +1,93 @@
 import Link from "next/link";
+import Image from "next/image";
+import { Calculator, LayoutTemplate, Download, CreditCard } from "lucide-react";
 
 export default function HomePage() {
-    return (
-        <main className="min-h-screen bg-page-bg py-16">
-            <div className="max-w-5xl mx-auto px-6">
-                <nav className="flex items-center justify-between mb-12">
-                    <div className="text-xl font-bold">MiniLemon</div>
-                    <div className="flex gap-6 text-sm text-muted">
-                        <a href="#">Beranda</a>
-                        <a href="#">Tentang</a>
-                        <a href="#">Kontak</a>
-                    </div>
-                </nav>
+  return (
+    <main className="bg-page-bg overflow-hidden">
+      {/* HERO */}
+      <section className="max-w-6xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-14 items-center">
+        <div>
+          <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight mb-6">
+            Buat Invoice & Receipt Profesional{" "}
+            <span className="text-orange-500 block">dalam Hitungan Menit</span>
+          </h1>
 
-                <section className="grid lg:grid-cols-12 gap-8 items-center mb-12">
-                    <div className="lg:col-span-7">
-                        <h1 className="text-3xl font-extrabold mb-4">
-                            Buat Invoice & Receipt Profesional dalam Hitungan
-                            Menit
-                        </h1>
-                        <p className="text-md text-muted mb-6">
-                            Cepat, mudah, dan profesional untuk UMKM dan
-                            freelancer
-                        </p>
+          <p className="text-gray-600 mb-3 max-w-xl">
+            Cepat, mudah, dan profesional untuk UMKM, freelancer, dan bisnis
+            kecil.
+          </p>
+          <p className="text-gray-600 mb-10">
+            Tanpa perlu pengetahuan teknis. Mulai kurang dari 5 menit.
+          </p>
 
-                        <div className="flex gap-3">
-                            <Link
-                                href="/invoice"
-                                className="bg-primary text-white px-5 py-3 rounded-lg shadow"
-                            >
-                                Mulai Sekarang
-                            </Link>
-                            <Link
-                                href="/invoice"
-                                className="bg-white border border-gray-200 px-4 py-3 rounded-lg"
-                            >
-                                Pelajari Lebih Lanjut
-                            </Link>
-                        </div>
-                    </div>
+          <Link
+            href="/invoice"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-7 py-3 rounded-xl shadow-md hover:bg-orange-600 hover:scale-105 transition"
+          >
+            Get Started
+          </Link>
+        </div>
 
-                    <div className="lg:col-span-5">
-                        <div className="bg-card-bg rounded-xl p-6 shadow-soft-md border border-border">
-                            <h3 className="font-semibold mb-2">
-                                Pilih Dokumen
-                            </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                <Link
-                                    href="/invoice"
-                                    className="bg-white rounded-lg p-4 flex flex-col items-start gap-2 shadow-sm hover:shadow-md"
-                                >
-                                    <div className="text-lg font-semibold">
-                                        Invoice
-                                    </div>
-                                    <div className="text-sm text-muted">
-                                        Buat faktur profesional untuk pelanggan
-                                    </div>
-                                    <div className="mt-auto">
-                                        <span className="text-primary font-medium">
-                                            Buat Sekarang →
-                                        </span>
-                                    </div>
-                                </Link>
+        <div className="relative flex justify-center">
+          <div className="absolute -inset-4 bg-orange-100 rounded-3xl blur-3xl opacity-60" />
+          <Image
+            src="/images/hero-invoice.png"
+            alt="Invoice preview"
+            width={520}
+            height={420}
+            className="relative rounded-2xl shadow-2xl"
+            priority
+          />
+        </div>
+      </section>
 
-                                <Link
-                                    href="/receipt"
-                                    className="bg-white rounded-lg p-4 flex flex-col items-start gap-2 shadow-sm hover:shadow-md"
-                                >
-                                    <div className="text-lg font-semibold">
-                                        Receipt
-                                    </div>
-                                    <div className="text-sm text-muted">
-                                        Buat kuitansi / struk pembayaran
-                                    </div>
-                                    <div className="mt-auto">
-                                        <span className="text-primary font-medium">
-                                            Buat Sekarang →
-                                        </span>
-                                    </div>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+      {/* FEATURES */}
+      <section className="py-24 bg-white">
+        <h2 className="text-center text-2xl font-bold mb-14">
+          Semua Yang Anda Butuhkan Untuk Membuat Dokumen
+        </h2>
 
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border">
-                        <h4 className="font-semibold mb-2">
-                            Perhitungan otomatis
-                        </h4>
-                        <p className="text-sm text-muted">
-                            Subtotal, diskon, dan pajak dihitung otomatis.
-                        </p>
-                    </div>
-                    <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border">
-                        <h4 className="font-semibold mb-2">
-                            Template profesional
-                        </h4>
-                        <p className="text-sm text-muted">
-                            Pilih template yang cocok untuk brand Anda.
-                        </p>
-                    </div>
-                    <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border">
-                        <h4 className="font-semibold mb-2">Ekspor PDF</h4>
-                        <p className="text-sm text-muted">
-                            Unduh dan bagikan dalam format PDF siap cetak.
-                        </p>
-                    </div>
-                </section>
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-8">
+          {[
+            {
+              icon: Calculator,
+              title: "Auto Calculation",
+              desc: "Perhitungan subtotal, pajak, dan diskon otomatis",
+            },
+            {
+              icon: LayoutTemplate,
+              title: "Professional Template",
+              desc: "Template siap pakai dengan tampilan profesional",
+            },
+            {
+              icon: Download,
+              title: "PDF Export",
+              desc: "Ekspor dokumen PDF siap dikirim ke klien",
+            },
+            {
+              icon: CreditCard,
+              title: "Payment Status",
+              desc: "Lacak dan kelola status pembayaran",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="group bg-card-bg rounded-2xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition text-center"
+            >
+              <div className="w-14 h-14 mx-auto mb-5 flex items-center justify-center rounded-xl bg-orange-100 group-hover:bg-orange-500 transition">
+                <item.icon
+                  size={28}
+                  className="text-orange-500 group-hover:text-white transition"
+                />
+              </div>
 
-                <footer className="mt-12 text-center text-sm text-muted">
-                    &copy; {new Date().getFullYear()} MiniLemon — Semua hak
-                    dilindungi.
-                </footer>
+              <h4 className="font-semibold mb-2">{item.title}</h4>
+              <p className="text-sm text-muted leading-relaxed">{item.desc}</p>
             </div>
-        </main>
-    );
+          ))}
+        </div>
+      </section>
+    </main>
+  );
 }
