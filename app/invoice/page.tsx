@@ -15,72 +15,77 @@ import PdfPreview from "@/components/invoice-preview/PdfPreview";
 import ResetButton from "@/components/invoice-form/ResetButton";
 
 export default function InvoicePage() {
-  const hydrated = useHydration();
-  const { hasHydrated } = useInvoiceStore();
+    const hydrated = useHydration();
+    const { hasHydrated } = useInvoiceStore();
 
-  useEffect(() => {
-    if (!hydrated) return;
-    if (!hasHydrated) return;
+    useEffect(() => {
+        if (!hydrated) return;
+        if (!hasHydrated) return;
 
-    const s = useInvoiceStore.getState().data;
+        const s = useInvoiceStore.getState().data;
 
-    const isEmpty =
-      s.items.length === 0 &&
-      (!s.brand || !s.brand.name) &&
-      (!s.client || !s.client.name);
+        const isEmpty =
+            s.items.length === 0 &&
+            (!s.brand || !s.brand.name) &&
+            (!s.client || !s.client.name);
 
-    if (isEmpty) {
-      useInvoiceStore.getState().initialize("INVOICE", { reset: true });
-      return;
-    }
+        if (isEmpty) {
+            useInvoiceStore.getState().initialize("INVOICE", { reset: true });
+            return;
+        }
 
-    if (s.documentType !== "INVOICE") {
-      useInvoiceStore.getState().setDocumentType("INVOICE");
-    }
-  }, [hydrated, hasHydrated]);
+        if (s.documentType !== "INVOICE") {
+            useInvoiceStore.getState().setDocumentType("INVOICE");
+        }
+    }, [hydrated, hasHydrated]);
 
-  if (!hydrated || !hasHydrated) return null;
+    if (!hydrated || !hasHydrated) return null;
 
-  return (
-    <main className="py-8 bg-page-bg min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">Buat Invoice</h1>
-            <p className="text-sm text-muted">
-              Isi detailnya untuk membuat invoice profesional Anda
-            </p>
-          </div>
-        </div>
+    return (
+        /* pt-0 menghapus semua jarak atas dari container utama */
+        <main className="pt-0 pb-8 bg-page-bg min-h-screen">
+            <div className="max-w-7xl mx-auto px-6">
+                {/* pt-0 dan mb-0 membuat jarak minimal antara navbar dan judul */}
+                <div className="flex items-center justify-between pt-0 mb-0">
+                    <div>
+                        <h1 className="text-2xl font-bold leading-tight">
+                            Buat Invoice
+                        </h1>
+                        <p className="text-sm text-muted">
+                            Isi detailnya untuk membuat invoice profesional Anda
+                        </p>
+                    </div>
+                </div>
 
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-6 space-y-4 pr-2">
-            <DocumentDetailForm />
-            <BrandInfoForm />
-            <ClientInfoForm />
-            <ItemListForm />
-            <CalculationForm />
-            <PaymentStatus />
-            <NotesForm />
+                <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+                    <div className="lg:col-span-6 space-y-4 pr-2">
+                        <DocumentDetailForm />
+                        <BrandInfoForm />
+                        <ClientInfoForm />
+                        <ItemListForm />
+                        <CalculationForm />
+                        <PaymentStatus />
+                        <NotesForm />
 
-            <div className="flex gap-3 mt-4">
-              <ResetButton />
+                        <div className="flex gap-3 mt-4">
+                            <ResetButton />
+                        </div>
+                    </div>
+
+                    <aside className="lg:col-span-6">
+                        {/* top-16 disesuaikan karena navbar sekarang lebih pendek */}
+                        <div className="sticky top-16">
+                            <div className="mb-4">
+                                <TemplateSwitcher />
+                            </div>
+
+                            <div className="mt-4">
+                                <PdfPreview />
+                            </div>
+                        </div>
+                    </aside>
+                </div>
             </div>
-          </div>
-
-          <aside className="lg:col-span-6">
-            <div className="sticky top-20">
-              <div className="mb-4">
-                <TemplateSwitcher />
-              </div>
-
-              <div className="mt-4">
-                <PdfPreview />
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </main>
-  );
+        </main>
+    );
 }
