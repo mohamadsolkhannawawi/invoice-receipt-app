@@ -139,6 +139,7 @@ export default function PdfPreview() {
             setPdfJsError(null);
             try {
                 // dynamic import of pdf.js (legacy build for browser)
+                // @ts-ignore - runtime-only import; types provided in src/types/pdfjs.d.ts
                 const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf");
 
                 // Use local worker served from /public for same-origin fetch
