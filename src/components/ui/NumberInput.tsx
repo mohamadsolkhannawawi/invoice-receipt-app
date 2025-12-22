@@ -25,8 +25,13 @@ export default function NumberInput({
     >
       <input
         type="number"
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        value={value === 0 ? "" : value}
+        placeholder="0"
+        onChange={(e) => {
+          const raw = e.target.value;
+          const parsed = raw === "" ? 0 : Number(raw);
+          onChange(Number.isNaN(parsed) ? 0 : parsed);
+        }}
         className="w-full appearance-none rounded-lg bg-transparent px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
       />
 

@@ -36,38 +36,36 @@ export default function Navbar() {
             className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all
               ${
                 isHome
-                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600 hover:shadow-lg"
-                  : "text-orange-500 hover:bg-orange-100 hover:shadow"
+                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600"
+                  : "text-orange-500 hover:bg-orange-100"
               }
             `}
           >
-            {isHome && <Home size={16} />}
+            {isHome && <Home size={14} />}
             Home
           </Link>
 
-          {/* INVOICE */}
           <Link
             href="/invoice"
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full transition-all
               ${
                 isInvoice
-                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600 hover:shadow-lg"
-                  : "text-orange-500 hover:bg-orange-100 hover:shadow"
+                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600"
+                  : "text-orange-500 hover:bg-orange-100"
               }
             `}
           >
-            {isInvoice && <FileText size={16} />}
+            {isInvoice && <FileText size={14} />}
             Invoice
           </Link>
 
-          {/* RECEIPT */}
           <Link
             href="/receipt"
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full transition-all
               ${
                 isReceipt
-                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600 hover:shadow-lg"
-                  : "text-orange-500 hover:bg-orange-100 hover:shadow"
+                  ? "bg-orange-500 text-white shadow-md hover:bg-orange-600"
+                  : "text-orange-500 hover:bg-orange-100"
               }
             `}
           >
