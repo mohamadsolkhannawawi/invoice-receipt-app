@@ -8,13 +8,13 @@ The app is built with Next.js (App Router), TypeScript, Tailwind CSS and uses `@
 
 ## Tech Stack
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **PDF generation:** @react-pdf/renderer
-- **State management:** zustand
-- **Forms & validation:** react-hook-form, zod
-- **Icons:** lucide-react, FontAwesome
+-   **Framework:** Next.js (App Router)
+-   **Language:** TypeScript
+-   **Styling:** Tailwind CSS
+-   **PDF generation:** @react-pdf/renderer
+-   **State management:** zustand
+-   **Forms & validation:** react-hook-form, zod
+-   **Icons:** lucide-react, FontAwesome
 
 ## Project Structure
 
@@ -40,24 +40,24 @@ invoice-receipt-app/
 
 See the components folder for detailed implementation of forms, previewers, and PDF templates:
 
-- The `src/components/pdf-templates` folder contains `InvoiceTemplate.tsx` and `ReceiptTemplate.tsx` used to render PDFs via `@react-pdf/renderer`.
-- The `src/components/invoice-preview` directory contains `PdfPreview.tsx`, `HtmlPreview.tsx`, and preview styles for templates A/B/C.
+-   The `src/components/pdf-templates` folder contains `InvoiceTemplate.tsx` and `ReceiptTemplate.tsx` used to render PDFs via `@react-pdf/renderer`.
+-   The `src/components/invoice-preview` directory contains `PdfPreview.tsx`, `HtmlPreview.tsx`, and preview styles for templates A/B/C.
 
 ## Features
 
-- Create invoices and receipts with brand and client info
-- Add multiple line items (quantity, unit price)
-- Calculation section with tax and discount
-- Three printable templates for invoice and receipt styles (A/B/C)
-- Live PDF preview and export (download)
-- Logo upload and template switching
+-   Create invoices and receipts with brand and client info
+-   Add multiple line items (quantity, unit price)
+-   Calculation section with tax and discount
+-   Three printable templates for invoice and receipt styles (A/B/C)
+-   Live PDF preview and export (download)
+-   Logo upload and template switching
 
 ## Installation and Setup
 
 ### Prerequisites
 
-- Node.js (v18+ recommended)
-- npm or yarn
+-   Node.js (v18+ recommended)
+-   npm or yarn
 
 ### Install dependencies
 
@@ -80,33 +80,33 @@ Open http://localhost:3000 (Next's default) to view the app.
 
 ## Important Files
 
-- **Layout & global**: [app/layout.tsx](app/layout.tsx#L1) — site layout, navbar, footer, favicon, title.
-- **Invoice page**: [app/invoice/page.tsx](app/invoice/page.tsx#L1) — main invoice editor page.
-- **Receipt page**: [app/receipt/page.tsx](app/receipt/page.tsx#L1) — main receipt editor page.
-- **PDF templates**: [src/components/pdf-templates/InvoiceTemplate.tsx](src/components/pdf-templates/InvoiceTemplate.tsx#L1-L20), [src/components/pdf-templates/ReceiptTemplate.tsx](src/components/pdf-templates/ReceiptTemplate.tsx#L1-L20).
-- **PDF preview/download**: [src/components/invoice-preview/PdfPreview.tsx](src/components/invoice-preview/PdfPreview.tsx#L1-L80).
-- **Store**: [src/store/useInvoiceStore.ts](src/store/useInvoiceStore.ts) — centralized state for document data.
+-   **Layout & global**: [app/layout.tsx](app/layout.tsx#L1) — site layout, navbar, footer, favicon, title.
+-   **Invoice page**: [app/invoice/page.tsx](app/invoice/page.tsx#L1) — main invoice editor page.
+-   **Receipt page**: [app/receipt/page.tsx](app/receipt/page.tsx#L1) — main receipt editor page.
+-   **PDF templates**: [src/components/pdf-templates/InvoiceTemplate.tsx](src/components/pdf-templates/InvoiceTemplate.tsx#L1-L20), [src/components/pdf-templates/ReceiptTemplate.tsx](src/components/pdf-templates/ReceiptTemplate.tsx#L1-L20).
+-   **PDF preview/download**: [src/components/invoice-preview/PdfPreview.tsx](src/components/invoice-preview/PdfPreview.tsx#L1-L80).
+-   **Store**: [src/store/useInvoiceStore.ts](src/store/useInvoiceStore.ts) — centralized state for document data.
 
 ## Notes & Tips
 
-- Favicon and title are set in `app/layout.tsx`. The project uses `public/images/Logo.svg` and `public/images/Logo.png` as favicon assets.
-- FontAwesome is included; if you get module not found errors, install the packages:
+-   Favicon and title are set in `app/layout.tsx`. The project uses `public/images/Logo.svg` and `public/images/Logo.png` as favicon assets.
+-   FontAwesome is included; if you get module not found errors, install the packages:
 
 ```bash
 npm install @fortawesome/fontawesome-svg-core @fortawesome/free-brands-svg-icons @fortawesome/react-fontawesome
 ```
 
-- Numeric inputs show a `0` placeholder by design; the UI component is `src/components/ui/NumberInput.tsx`.
-- PDF receipt templates intentionally hide `Jatuh Tempo` (due date) — due date appears only on invoices.
+-   Numeric inputs show a `0` placeholder by design; the UI component is `src/components/ui/NumberInput.tsx`.
+-   PDF receipt templates intentionally hide `Jatuh Tempo` (due date) — due date appears only on invoices.
 
 ## Scripts
 
 Available npm scripts from `package.json`:
 
-- `dev` — run Next.js development server
-- `build` — build for production
-- `start` — start production server (after build)
-- `lint` — run ESLint
+-   `dev` — run Next.js development server
+-   `build` — build for production
+-   `start` — start production server (after build)
+-   `lint` — run ESLint
 
 ## Contributing
 
