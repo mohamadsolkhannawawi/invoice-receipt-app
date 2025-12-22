@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { pdf } from "@react-pdf/renderer";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import InvoiceTemplate from "@/components/pdf-templates/InvoiceTemplate";
@@ -14,7 +14,10 @@ export default function PdfPreview() {
     const [isDownloading, setIsDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+    const [pdfJsError, setPdfJsError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     const filename =
         data.documentType === "INVOICE"
@@ -28,6 +31,34 @@ export default function PdfPreview() {
             setIsDownloading(true);
             setSuccess(false);
 
+            // On mobile-capable browsers try native share first
+            const isMobile =
+                typeof navigator !== "undefined" &&
+                /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(
+                    navigator.userAgent
+                );
+
+            if (isMobile && (navigator as any).share) {
+                try {
+                    const resp = await fetch(previewUrl);
+                    const blob = await resp.blob();
+                    const file = new File([blob], filename, {
+                        type: "application/pdf",
+                    });
+                    // @ts-ignore - Web Share files may not exist in all TS DOM libs
+                    await (navigator as any).share({
+                        files: [file],
+                        title: filename,
+                    });
+                    setSuccess(true);
+                    setTimeout(() => setSuccess(false), 2500);
+                    return;
+                } catch (err) {
+                    // fallthrough to download link fallback
+                    console.warn("Share failed, falling back to download", err);
+                }
+            }
+
             const link = document.createElement("a");
             link.href = previewUrl;
             link.download = filename;
@@ -39,6 +70,15 @@ export default function PdfPreview() {
             setTimeout(() => setSuccess(false), 2500);
         } finally {
             setIsDownloading(false);
+        }
+    };
+
+    const handleOpenFull = () => {
+        if (!previewUrl) return;
+        try {
+            window.open(previewUrl, "_blank");
+        } catch (err) {
+            // ignore
         }
     };
 
@@ -70,6 +110,7 @@ export default function PdfPreview() {
 
                 objectUrl = URL.createObjectURL(blob);
                 setPreviewUrl(objectUrl);
+                setPreviewBlob(blob);
             } catch (err) {
                 console.error("PDF generation error:", err);
                 setError("Tidak dapat membuat pratinjau PDF.");
@@ -87,6 +128,72 @@ export default function PdfPreview() {
         };
     }, [data]);
 
+    // Render PDF Blob to canvas using pdf.js (dynamic import)
+    useEffect(() => {
+        if (!previewBlob) return;
+
+        let cancelled = false;
+        let renderTask: any = null;
+
+        const renderPdf = async () => {
+            setPdfJsError(null);
+            try {
+                // dynamic import of pdf.js (legacy build for browser)
+                const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf");
+
+                // Use local worker served from /public for same-origin fetch
+                // prefer .mjs worker provided by pdfjs-dist package
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+                const arrayBuffer = await previewBlob.arrayBuffer();
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                const pdfDoc = await loadingTask.promise;
+                if (cancelled) return;
+
+                const page = await pdfDoc.getPage(1);
+                if (cancelled) return;
+
+                const scale = 1.2;
+                const viewport = page.getViewport({ scale });
+
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+
+                const context = canvas.getContext("2d");
+                canvas.width = Math.floor(viewport.width);
+                canvas.height = Math.floor(viewport.height);
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport,
+                };
+
+                renderTask = page.render(renderContext);
+                await renderTask.promise;
+            } catch (err: any) {
+                console.error("pdf.js render error:", err);
+                setPdfJsError(
+                    "Rendering PDF gagal. Gunakan tombol 'Lihat PDF' atau unduh."
+                );
+            }
+        };
+
+        renderPdf();
+
+        return () => {
+            cancelled = true;
+            if (renderTask && renderTask.cancel) renderTask.cancel();
+        };
+    }, [previewBlob]);
+
+    const isMobile =
+        typeof navigator !== "undefined" &&
+        /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(
+            navigator.userAgent
+        );
+
     return (
         <div className="bg-card-bg rounded-xl p-5 border border-border">
             {/* Header */}
@@ -101,6 +208,7 @@ export default function PdfPreview() {
                             PDF berhasil diunduh
                         </span>
                     )}
+                    {/* header 'Lihat PDF' removed for cleaner UI on mobile */}
 
                     <Button
                         onClick={handleDownload}
@@ -134,7 +242,35 @@ export default function PdfPreview() {
 
             {/* Preview */}
             <div className="rounded-lg overflow-hidden">
-                {previewUrl && (
+                {previewBlob && !pdfJsError && (
+                    <div
+                        className="w-full transition"
+                        style={{ opacity: isGenerating ? 0.6 : 1 }}
+                    >
+                        <canvas
+                            ref={canvasRef}
+                            style={{
+                                width: "100%",
+                                height: "auto",
+                                display: "block",
+                            }}
+                        />
+                    </div>
+                )}
+
+                {pdfJsError && previewUrl && isMobile && (
+                    <div className="p-4 text-center">
+                        <Button
+                            onClick={handleOpenFull}
+                            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                            Lihat Preview
+                        </Button>
+                    </div>
+                )}
+
+                {!previewBlob && previewUrl && (
+                    // fallback: iframe when blob is not available (should be rare)
                     <iframe
                         src={previewUrl}
                         title="Pratinjau PDF"
@@ -144,6 +280,12 @@ export default function PdfPreview() {
                             opacity: isGenerating ? 0.6 : 1,
                         }}
                     />
+                )}
+
+                {!previewBlob && !previewUrl && (
+                    <div className="p-6 text-center text-sm text-slate-700">
+                        <p>Belum ada pratinjau tersedia.</p>
+                    </div>
                 )}
             </div>
         </div>
