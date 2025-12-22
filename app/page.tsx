@@ -18,7 +18,7 @@ export default function HomePage() {
             kecil.
           </p>
           <p className="text-gray-600 mb-10">
-            Tanpa perlu pengetahuan teknis. Mulai kurang dari 5 menit.
+            Mulai buat invoice dan receipt kurang dari 5 menit.
           </p>
 
           <Link
