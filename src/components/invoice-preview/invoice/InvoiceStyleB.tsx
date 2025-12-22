@@ -1,13 +1,19 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
+import { InvoiceData } from "@/lib/types";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { FileText } from "lucide-react";
 import { DEFAULT_BRAND_COLOR } from "@/lib/utils";
 
-export default function InvoiceStyleB() {
-  const { data } = useInvoiceStore();
+export default function InvoiceStyleB({
+  overrideData,
+}: {
+  overrideData?: InvoiceData;
+}) {
+  const { data: storeData } = useInvoiceStore();
+  const data = overrideData ?? storeData;
   const result = calculateInvoiceTotal(data);
   const brandColor = data.brand.color || DEFAULT_BRAND_COLOR;
 
@@ -21,7 +27,7 @@ export default function InvoiceStyleB() {
             <img
               src={data.brand.logo}
               alt="Logo"
-              className="w-14 h-14 object-contain mb-2"
+              className="w-12 h-12 object-contain mb-1"
             />
           ) : null}
 
@@ -50,12 +56,12 @@ export default function InvoiceStyleB() {
       {/* Invoice badge */}
       <div className="flex justify-center mt-4">
         <div
-          className="inline-flex items-center gap-3 px-6 py-3 rounded-md border"
+          className="inline-flex items-center gap-3 px-5 py-2 rounded-md border"
           style={{ borderColor: brandColor, borderWidth: 2 }}
         >
           <FileText className="w-5 h-5" />
           <span className="text-xl font-bold" style={{ color: brandColor }}>
-            INVOICE
+            {data.documentType}
           </span>
         </div>
       </div>
@@ -66,15 +72,21 @@ export default function InvoiceStyleB() {
           className="flex justify-between items-center py-3"
           style={{ borderBottom: "1px solid " + brandColor }}
         >
-          <div className="text-xs text-muted">Nomor Invoice</div>
-          <div className="font-medium text-sm">#{data.invoiceNumber}</div>
+          <div className="text-xs text-muted">
+            {data.documentType === "INVOICE" ? "Nomor Invoice" : "Receipt No"}
+          </div>
+          <div className="font-medium text-sm">
+            {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
+          </div>
         </div>
         <div
           className="flex justify-between items-center py-3"
           style={{ borderBottom: "1px solid " + brandColor }}
         >
           <div className="text-xs text-muted">Tanggal Dibuat</div>
-          <div className="text-sm">{formatDate(data.issueDate)}</div>
+          <div className="text-sm">
+            {data.issueDate ? formatDate(data.issueDate) : "-"}
+          </div>
         </div>
         <div
           className="flex justify-between items-center py-3"
@@ -90,7 +102,7 @@ export default function InvoiceStyleB() {
       {/* Recipient */}
       <div className="flex justify-center mt-4">
         <div
-          className="inline-block border rounded-md px-6 py-3"
+          className="inline-block border rounded-md px-4 py-2"
           style={{ borderColor: brandColor }}
         >
           <div className="text-sm font-bold" style={{ color: brandColor }}>
@@ -203,14 +215,12 @@ export default function InvoiceStyleB() {
             </div>
           </div>
 
-          {data.discountValue > 0 && (
-            <div className="flex justify-between items-center">
-              <div className="text-sm font-medium text-red-600">Diskon</div>
-              <div className="text-sm font-semibold text-red-600">
-                -{formatCurrency(result.discountAmount)}
-              </div>
+          <div className="flex justify-between items-center">
+            <div className="text-sm font-medium text-red-600">Diskon</div>
+            <div className="text-sm font-semibold text-red-600">
+              -{formatCurrency(result.discountAmount)}
             </div>
-          )}
+          </div>
 
           <div className="flex justify-between items-center">
             <div className="text-sm font-medium">Pajak {data.taxRate}%</div>
@@ -225,7 +235,7 @@ export default function InvoiceStyleB() {
           />
 
           <div
-            className="border rounded-md p-4"
+            className="border rounded-md p-3"
             style={{ borderColor: brandColor }}
           >
             <div className="flex justify-between items-center">
@@ -241,19 +251,19 @@ export default function InvoiceStyleB() {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-4 flex justify-center">
             <div
-              className="inline-block border rounded-md px-8 py-4"
+              className="inline-block border rounded-md px-6 py-3"
               style={{ borderColor: brandColor, borderWidth: 2 }}
             >
-              <div className="text-xl font-bold" style={{ color: brandColor }}>
+              <div className="text-lg font-bold" style={{ color: brandColor }}>
                 {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
               </div>
             </div>
           </div>
 
           {data.notes && (
-            <div className="mt-6">
+            <div className="mt-4">
               <div className="text-sm font-bold" style={{ color: brandColor }}>
                 CATATAN
               </div>

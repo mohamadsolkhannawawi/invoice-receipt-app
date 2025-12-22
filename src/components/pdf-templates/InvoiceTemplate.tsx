@@ -162,13 +162,20 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
 
   const brandColor = data.brand?.color || DEFAULT_BRAND_COLOR;
 
-  const isInvoice = data.documentType === "INVOICE";
-
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page
+        size="A4"
+        style={
+          data.template === "STYLE_B"
+            ? { ...styles.page, padding: 24 }
+            : styles.page
+        }
+      >
         {data.template === "STYLE_A" ? (
-          <Text style={styles.dateTop}>{formatDate(data.issueDate)}</Text>
+          <Text style={styles.dateTop}>
+            {data.issueDate ? formatDate(data.issueDate) : "-"}
+          </Text>
         ) : null}
 
         {data.template === "STYLE_A" ? (
@@ -181,12 +188,12 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                 ) : null}
 
                 <View>
-                  {data.brand.name ? (
-                    <Text style={[styles.brandName, { color: brandColor }]}>
-                      {data.brand.name}
-                    </Text>
-                  ) : null}
-                  <Text style={styles.brandMeta}>{data.brand.location}</Text>
+                  <Text style={[styles.brandName, { color: brandColor }]}>
+                    {data.brand.name || "Nama Brand"}
+                  </Text>
+                  <Text style={styles.brandMeta}>
+                    {data.brand.location || "-"}
+                  </Text>
                   {data.brand.contact && (
                     <Text style={styles.smallText}>{data.brand.contact}</Text>
                   )}
@@ -206,23 +213,17 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                     <Text
                       style={{ color: "#fff", fontSize: 12, marginLeft: 6 }}
                     >
-                      INVOICE
+                      {data.documentType}
                     </Text>
                   </View>
                 </View>
 
-                {data.invoiceNumber ? (
-                  <Text
-                    style={{ marginTop: 6, fontSize: 11, color: "#111827" }}
-                  >
-                    #{data.invoiceNumber}
-                  </Text>
-                ) : null}
-                {data.dueDate ? (
-                  <Text style={[styles.smallText, { marginTop: 6 }]}>
-                    Jatuh Tempo :{formatDate(data.dueDate)}
-                  </Text>
-                ) : null}
+                <Text style={{ marginTop: 6, fontSize: 11, color: "#111827" }}>
+                  {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
+                </Text>
+                <Text style={[styles.smallText, { marginTop: 6 }]}>
+                  Jatuh Tempo: {data.dueDate ? formatDate(data.dueDate) : "-"}
+                </Text>
               </View>
             </View>
 
@@ -238,7 +239,7 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
             >
               <Text style={styles.recipientTitle}>Ditujukan Kepada :</Text>
               <Text style={styles.recipientName}>
-                {data.client?.name || ""}
+                {data.client?.name || "-"}
               </Text>
             </View>
 
@@ -350,80 +351,39 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
               ))}
             </View>
 
-            {data.items.length > 0 ? (
-              <View style={styles.totals}>
-                <View style={styles.totalsRow}>
-                  <Text style={styles.totalsLabel}>Subtotal</Text>
-                  <Text style={styles.totalsValue}>
-                    {formatCurrency(result.subtotal)}
-                  </Text>
-                </View>
-
-                {result.discountAmount > 0 ? (
-                  <View style={styles.totalsRow}>
-                    <Text style={[styles.totalsLabel, styles.discountRed]}>
-                      Diskon
-                    </Text>
-                    <Text style={[styles.totalsValue, styles.discountRed]}>
-                      -{formatCurrency(result.discountAmount)}
-                    </Text>
-                  </View>
-                ) : null}
-
-                <View style={styles.totalsRow}>
-                  <Text style={styles.totalsLabel}>Pajak {data.taxRate}%</Text>
-                  <Text style={styles.totalsValue}>
-                    {formatCurrency(result.taxAmount)}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    height: 2,
-                    backgroundColor: hexToRgba(brandColor, 0.16),
-                    marginTop: 8,
-                    marginBottom: 8,
-                  }}
-                />
-
-                <View
-                  style={{
-                    ...styles.totalBarLarge,
-                    backgroundColor: brandColor,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingHorizontal: 12,
-                  }}
-                >
-                  <Text
-                    style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}
-                  >
-                    Total
-                  </Text>
-                  <Text
-                    style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}
-                  >
-                    {formatCurrency(result.total)}
-                  </Text>
-                </View>
-
-                {data.status && data.status !== "DRAFT" ? (
-                  <View style={{ marginTop: 12, alignItems: "center" }}>
-                    <View
-                      style={{
-                        ...styles.statusBadgeLarge,
-                        backgroundColor: brandColor,
-                      }}
-                    >
-                      <Text style={{ color: "#fff", fontSize: 12 }}>
-                        {data.status === "PAID" ? "Lunas" : "Belum Dibayar"}
-                      </Text>
-                    </View>
-                  </View>
-                ) : null}
+            <View style={styles.totals}>
+              <View style={styles.totalsRow}>
+                <Text style={styles.totalsLabel}>Subtotal</Text>
+                <Text style={styles.totalsValue}>
+                  {formatCurrency(result.subtotal)}
+                </Text>
               </View>
-            ) : (
+
+              <View style={styles.totalsRow}>
+                <Text style={[styles.totalsLabel, styles.discountRed]}>
+                  Diskon
+                </Text>
+                <Text style={[styles.totalsValue, styles.discountRed]}>
+                  -{formatCurrency(result.discountAmount)}
+                </Text>
+              </View>
+
+              <View style={styles.totalsRow}>
+                <Text style={styles.totalsLabel}>Pajak {data.taxRate}%</Text>
+                <Text style={styles.totalsValue}>
+                  {formatCurrency(result.taxAmount)}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  height: 2,
+                  backgroundColor: hexToRgba(brandColor, 0.16),
+                  marginTop: 8,
+                  marginBottom: 8,
+                }}
+              />
+
               <View
                 style={{
                   ...styles.totalBarLarge,
@@ -442,22 +402,38 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                 <Text
                   style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}
                 >
-                  {""}
+                  {formatCurrency(result.total)}
                 </Text>
               </View>
-            )}
+
+              <View style={{ marginTop: 12, alignItems: "center" }}>
+                <View
+                  style={{
+                    ...styles.statusBadgeLarge,
+                    backgroundColor: brandColor,
+                  }}
+                >
+                  <Text style={{ color: "#fff", fontSize: 12 }}>
+                    {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
+                  </Text>
+                </View>
+              </View>
+            </View>
           </>
         ) : data.template === "STYLE_B" ? (
           // Classic
           <>
-            <View style={{ alignItems: "center", marginBottom: 10 }}>
+            <View style={{ alignItems: "center", marginBottom: 6 }}>
               {data.brand.logo ? (
                 // eslint-disable-next-line jsx-a11y/alt-text
-                <Image src={data.brand.logo} style={styles.logo} />
+                <Image
+                  src={data.brand.logo}
+                  style={{ ...styles.logo, width: 40, height: 40 }}
+                />
               ) : null}
 
               <Text
-                style={{ fontSize: 20, fontWeight: "bold", color: brandColor }}
+                style={{ fontSize: 18, fontWeight: "bold", color: brandColor }}
               >
                 {data.brand.name || "Nama Brand"}
               </Text>
@@ -482,9 +458,9 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                 style={{
                   borderColor: brandColor,
                   borderWidth: 2,
-                  paddingVertical: 10,
-                  paddingHorizontal: 18,
-                  borderRadius: 14,
+                  paddingVertical: 8,
+                  paddingHorizontal: 14,
+                  borderRadius: 12,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -504,7 +480,7 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                     fontSize: 16,
                   }}
                 >
-                  INVOICE
+                  {data.documentType}
                 </Text>
               </View>
             </View>
@@ -516,14 +492,16 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   justifyContent: "space-between",
                   borderBottomWidth: 1,
                   borderBottomColor: brandColor,
-                  paddingVertical: 6,
+                  paddingVertical: 4,
                 }}
               >
                 <Text style={{ fontSize: 10, color: "#374151" }}>
-                  Nomor Invoice
+                  {data.documentType === "INVOICE"
+                    ? "Nomor Invoice"
+                    : "Receipt No"}
                 </Text>
                 <Text style={{ fontSize: 12, color: "#111827" }}>
-                  #{data.invoiceNumber}
+                  {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
                 </Text>
               </View>
 
@@ -533,14 +511,14 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   justifyContent: "space-between",
                   borderBottomWidth: 1,
                   borderBottomColor: brandColor,
-                  paddingVertical: 6,
+                  paddingVertical: 4,
                 }}
               >
                 <Text style={{ fontSize: 10, color: "#374151" }}>
                   Tanggal Dibuat
                 </Text>
                 <Text style={{ fontSize: 12 }}>
-                  {formatDate(data.issueDate)}
+                  {data.issueDate ? formatDate(data.issueDate) : "-"}
                 </Text>
               </View>
 
@@ -550,7 +528,7 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   justifyContent: "space-between",
                   borderBottomWidth: 1,
                   borderBottomColor: brandColor,
-                  paddingVertical: 6,
+                  paddingVertical: 4,
                 }}
               >
                 <Text style={{ fontSize: 10, color: "#374151" }}>
@@ -562,13 +540,13 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
               </View>
             </View>
 
-            <View style={{ alignItems: "center", marginVertical: 12 }}>
+            <View style={{ alignItems: "center", marginVertical: 10 }}>
               <View
                 style={{
                   borderColor: brandColor,
                   borderWidth: 1,
-                  paddingVertical: 10,
-                  paddingHorizontal: 22,
+                  paddingVertical: 8,
+                  paddingHorizontal: 18,
                   borderRadius: 12,
                   backgroundColor: "#fff",
                 }}
@@ -590,8 +568,8 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
 
             <View
               style={{
-                marginTop: 12,
-                marginBottom: 12,
+                marginTop: 8,
+                marginBottom: 8,
                 borderRadius: 6,
               }}
             >
@@ -599,7 +577,7 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                 style={{
                   flexDirection: "row",
                   backgroundColor: brandColor,
-                  paddingVertical: 8,
+                  paddingVertical: 6,
                   paddingHorizontal: 6,
                   borderTopLeftRadius: 6,
                   borderTopRightRadius: 6,
@@ -655,7 +633,7 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   key={idx}
                   style={{
                     flexDirection: "row",
-                    paddingVertical: 10,
+                    paddingVertical: 6,
                     borderBottomWidth: 1,
                     borderBottomColor: brandColor,
                   }}
@@ -760,12 +738,12 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   }}
                 />
 
-                <View style={{ marginTop: 12 }}>
+                <View style={{ marginTop: 8 }}>
                   <View
                     style={{
                       borderColor: brandColor,
                       borderWidth: 1,
-                      padding: 14,
+                      padding: 10,
                       borderRadius: 10,
                       backgroundColor: "#fff",
                     }}
@@ -798,28 +776,24 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   </View>
                 </View>
 
-                <View style={{ marginTop: 14, alignItems: "center" }}>
+                <View style={{ marginTop: 10, alignItems: "center" }}>
                   <View
                     style={{
                       borderColor: brandColor,
                       borderWidth: 2,
-                      paddingVertical: 10,
-                      paddingHorizontal: 26,
+                      paddingVertical: 8,
+                      paddingHorizontal: 20,
                       borderRadius: 12,
                     }}
                   >
                     <Text
                       style={{
                         color: brandColor,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: "bold",
                       }}
                     >
-                      {isInvoice
-                        ? data.status === "PAID"
-                          ? "Lunas"
-                          : "Belum Dibayar"
-                        : "Lunas"}
+                      {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
                     </Text>
                   </View>
                 </View>
@@ -842,7 +816,6 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                   // eslint-disable-next-line jsx-a11y/alt-text
                   <Image src={data.brand.logo} style={styles.logo} />
                 ) : null}
-
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                     {data.brand.name || "Nama Brand"}
@@ -854,21 +827,19 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
 
               <View style={{ alignItems: "flex-end" }}>
                 <Text style={{ color: brandColor, fontWeight: "bold" }}>
-                  INVOICE
+                  {data.documentType}
                 </Text>
                 <Text
                   style={{ fontSize: 20, fontWeight: "bold", color: "#111827" }}
                 >
-                  #{data.invoiceNumber}
+                  {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
                 </Text>
                 <Text style={styles.smallText}>
-                  {formatDate(data.issueDate)}
+                  {data.issueDate ? formatDate(data.issueDate) : "-"}
                 </Text>
-                {data.dueDate ? (
-                  <Text style={[styles.smallText, { marginTop: 4 }]}>
-                    Jatuh Tempo: {formatDate(data.dueDate)}
-                  </Text>
-                ) : null}
+                <Text style={[styles.smallText, { marginTop: 4 }]}>
+                  Jatuh Tempo: {data.dueDate ? formatDate(data.dueDate) : "-"}
+                </Text>
               </View>
             </View>
 
@@ -931,22 +902,10 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                     marginVertical: 4,
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "#111827",
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <Text style={{ fontSize: 12, fontWeight: "bold" }}>
                     Subtotal
                   </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "#111827",
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <Text style={{ fontSize: 12, fontWeight: "bold" }}>
                     {formatCurrency(result.subtotal)}
                   </Text>
                 </View>
@@ -971,10 +930,8 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                     marginVertical: 4,
                   }}
                 >
-                  <Text style={{ fontSize: 12, color: "#111827" }}>
-                    Pajak {data.taxRate}%
-                  </Text>
-                  <Text style={{ fontSize: 12, color: "#111827" }}>
+                  <Text style={{ fontSize: 12 }}>Pajak {data.taxRate}%</Text>
+                  <Text style={{ fontSize: 12 }}>
                     {formatCurrency(result.taxAmount)}
                   </Text>
                 </View>
@@ -1015,31 +972,26 @@ export default function InvoiceTemplate({ data }: { data: InvoiceData }) {
                     </Text>
                   </View>
 
-                  {data.status && data.status !== "DRAFT" ? (
-                    <View style={{ marginTop: 8, alignItems: "flex-end" }}>
-                      <View
+                  <View style={{ marginTop: 8, alignItems: "flex-end" }}>
+                    <View
+                      style={{
+                        paddingVertical: 6,
+                        paddingHorizontal: 14,
+                        borderRadius: 6,
+                        backgroundColor: "#e5e7eb",
+                      }}
+                    >
+                      <Text
                         style={{
-                          borderWidth: data.status === "PAID" ? 0 : 1,
-                          borderColor: brandColor,
-                          paddingVertical: 6,
-                          paddingHorizontal: 12,
-                          borderRadius: 8,
-                          backgroundColor:
-                            data.status === "PAID" ? brandColor : "#e5e7eb",
+                          color: "#111827",
+                          fontSize: 11,
+                          fontWeight: "bold",
                         }}
                       >
-                        <Text
-                          style={{
-                            color: data.status === "PAID" ? "#fff" : brandColor,
-                            fontSize: 11,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {data.status === "PAID" ? "Lunas" : "Belum Dibayar"}
-                        </Text>
-                      </View>
+                        {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
+                      </Text>
                     </View>
-                  ) : null}
+                  </View>
                 </View>
               </View>
             </View>

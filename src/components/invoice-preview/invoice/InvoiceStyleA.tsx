@@ -1,6 +1,7 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
+import { InvoiceData } from "@/lib/types";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import {
   formatCurrency,
@@ -10,8 +11,13 @@ import {
 } from "@/lib/utils";
 import { FileText } from "lucide-react";
 
-export default function InvoiceStyleA() {
-  const { data } = useInvoiceStore();
+export default function InvoiceStyleA({
+  overrideData,
+}: {
+  overrideData?: InvoiceData;
+}) {
+  const { data: storeData } = useInvoiceStore();
+  const data = overrideData ?? storeData;
   const result = calculateInvoiceTotal(data);
 
   return (
@@ -24,14 +30,14 @@ export default function InvoiceStyleA() {
               {formatDate(data.issueDate)}
             </div>
           ) : (
-            <div className="h-4 mb-2" />
+            <div className="text-sm text-muted mb-2">-</div>
           )}
 
           <p
             className="text-2xl font-extrabold leading-tight"
             style={{ color: data.brand.color || undefined }}
           >
-            {data.brand.name || ""}
+            {data.brand.name || "-"}
           </p>
 
           <div className="text-sm text-muted mt-1">
@@ -46,18 +52,16 @@ export default function InvoiceStyleA() {
             style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
           >
             <FileText className="w-5 h-5 text-white" />
-            <span>INVOICE</span>
+            <span>{data.documentType}</span>
           </div>
 
           <div className="mt-3 text-sm text-muted">
-            {data.invoiceNumber ? `#${data.invoiceNumber}` : ""}
+            {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
           </div>
 
-          {data.dueDate ? (
-            <div className="mt-3 text-sm text-muted">
-              Jatuh Tempo:{formatDate(data.dueDate)}
-            </div>
-          ) : null}
+          <div className="mt-3 text-sm text-muted">
+            Jatuh Tempo: {data.dueDate ? formatDate(data.dueDate) : "-"}
+          </div>
         </div>
       </div>
 
@@ -80,7 +84,7 @@ export default function InvoiceStyleA() {
             color: data.brand.color || DEFAULT_BRAND_COLOR,
           }}
         >
-          {data.client.name || ""}
+          {data.client?.name || "-"}
         </div>
 
         <div
@@ -186,67 +190,51 @@ export default function InvoiceStyleA() {
       </table>
 
       {/* Totals */}
-      {data.items.length > 0 ? (
-        <div className="mt-6">
-          <div className="flex justify-between items-center text-sm py-1">
-            <div className="text-sm font-medium">Subtotal</div>
-            <div className="text-sm font-semibold">
-              {formatCurrency(result.subtotal)}
-            </div>
-          </div>
-          {data.discountValue > 0 ? (
-            <div className="flex justify-between items-center text-sm py-1">
-              <div className="text-sm font-medium">Diskon</div>
-              <div className="text-sm font-semibold text-red-600">
-                -{formatCurrency(result.discountAmount)}
-              </div>
-            </div>
-          ) : null}
-          <div className="flex justify-between items-center text-sm py-1">
-            <div className="text-sm font-medium">Pajak {data.taxRate}%</div>
-            <div className="text-sm font-semibold">
-              {formatCurrency(result.taxAmount)}
-            </div>
-          </div>
-
-          <div
-            className="border-t mt-3 mb-3"
-            style={{
-              borderColor: data.brand.color,
-            }}
-          />
-
-          <div
-            className="mt-4 text-white px-6 py-4 rounded-lg flex items-center justify-between text-xl font-bold"
-            style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
-          >
-            <div>Total</div>
-            <div>{formatCurrency(result.total)}</div>
+      <div className="mt-6">
+        <div className="flex justify-between items-center text-sm py-1">
+          <div className="text-sm font-medium">Subtotal</div>
+          <div className="text-sm font-semibold">
+            {formatCurrency(result.subtotal)}
           </div>
         </div>
-      ) : (
-        <div className="mt-6">
-          <div
-            className="mt-4 text-white px-6 py-4 rounded-lg flex items-center justify-between text-xl font-bold"
-            style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
-          >
-            <div>Total</div>
-            <div>{""}</div>
+        <div className="flex justify-between items-center text-sm py-1">
+          <div className="text-sm font-medium">Diskon</div>
+          <div className="text-sm font-semibold text-red-600">
+            -{formatCurrency(result.discountAmount)}
           </div>
         </div>
-      )}
+        <div className="flex justify-between items-center text-sm py-1">
+          <div className="text-sm font-medium">Pajak {data.taxRate}%</div>
+          <div className="text-sm font-semibold">
+            {formatCurrency(result.taxAmount)}
+          </div>
+        </div>
+
+        <div
+          className="border-t mt-3 mb-3"
+          style={{
+            borderColor: data.brand.color,
+          }}
+        />
+
+        <div
+          className="mt-4 text-white px-6 py-4 rounded-lg flex items-center justify-between text-xl font-bold"
+          style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
+        >
+          <div>Total</div>
+          <div>{formatCurrency(result.total)}</div>
+        </div>
+      </div>
 
       {/* Status */}
-      {data.status && data.status !== "DRAFT" ? (
-        <div className="mt-6 flex justify-center">
-          <div
-            className="text-white px-6 py-3 rounded-full font-bold text-lg"
-            style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
-          >
-            {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
-          </div>
+      <div className="mt-6 flex justify-center">
+        <div
+          className="text-white px-6 py-3 rounded-full font-bold text-lg"
+          style={{ backgroundColor: data.brand.color || DEFAULT_BRAND_COLOR }}
+        >
+          {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
         </div>
-      ) : null}
+      </div>
 
       {/* Notes */}
       {data.notes ? (

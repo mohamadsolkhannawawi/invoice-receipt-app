@@ -3,7 +3,6 @@
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { calculateInvoiceTotal } from "@/lib/calculation";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import Badge from "@/components/ui/Badge";
 import { Hash, Calendar } from "lucide-react";
 
 export default function ReceiptStyleB() {

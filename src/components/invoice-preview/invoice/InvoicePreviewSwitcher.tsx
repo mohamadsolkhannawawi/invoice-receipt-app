@@ -5,15 +5,20 @@ import InvoiceStyleA from "./InvoiceStyleA";
 import InvoiceStyleB from "./InvoiceStyleB";
 import InvoiceStyleC from "./InvoiceStyleC";
 
-export default function InvoicePreviewSwitcher() {
-    const { data } = useInvoiceStore();
+export default function InvoicePreviewSwitcher({
+  overrideData,
+}: {
+  overrideData?: import("@/lib/types").InvoiceData;
+}) {
+  const { data } = useInvoiceStore();
+  const usedData = overrideData ?? data;
 
-    switch (data.template) {
-        case "STYLE_B":
-            return <InvoiceStyleB />;
-        case "STYLE_C":
-            return <InvoiceStyleC />;
-        default:
-            return <InvoiceStyleA />;
-    }
+  switch (usedData.template) {
+    case "STYLE_B":
+      return <InvoiceStyleB overrideData={usedData} />;
+    case "STYLE_C":
+      return <InvoiceStyleC overrideData={usedData} />;
+    default:
+      return <InvoiceStyleA overrideData={usedData} />;
+  }
 }

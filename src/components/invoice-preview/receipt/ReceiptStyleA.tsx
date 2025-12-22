@@ -2,7 +2,7 @@
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { calculateInvoiceTotal } from "@/lib/calculation";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, DEFAULT_BRAND_COLOR } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import { Hash, Calendar } from "lucide-react";
 
@@ -19,14 +19,14 @@ export default function ReceiptStyleA() {
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
         <div
           className="rounded-lg p-2 bg-white border shadow-sm flex items-center gap-2"
-          style={{ borderColor: data.brand.color }}
+          style={{ borderColor: data.brand?.color || DEFAULT_BRAND_COLOR }}
         >
           <Hash className="w-5 h-5 text-slate-500" />
           <div>{data.invoiceNumber}</div>
         </div>
         <div
           className="rounded-lg p-2 bg-white border shadow-sm flex items-center gap-2"
-          style={{ borderColor: data.brand.color }}
+          style={{ borderColor: data.brand?.color || DEFAULT_BRAND_COLOR }}
         >
           <Calendar className="w-5 h-5 text-slate-500" />
           <div>{formatDate(data.issueDate)}</div>

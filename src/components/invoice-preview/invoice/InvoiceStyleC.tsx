@@ -7,8 +7,15 @@ import { Calendar, FileText } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import { hexToRgba, DEFAULT_BRAND_COLOR } from "@/lib/utils";
 
-export default function InvoiceStyleC() {
-  const { data } = useInvoiceStore();
+import { InvoiceData } from "@/lib/types";
+
+export default function InvoiceStyleC({
+  overrideData,
+}: {
+  overrideData?: InvoiceData;
+}) {
+  const { data: storeData } = useInvoiceStore();
+  const data = overrideData ?? storeData;
   const result = calculateInvoiceTotal(data);
 
   return (
@@ -30,11 +37,13 @@ export default function InvoiceStyleC() {
                 className="text-blue-600 font-bold text-lg"
                 style={{ color: data.brand.color || undefined }}
               >
-                {data.brand.name}
+                {data.brand.name || "-"}
               </p>
               <div className="text-sm text-muted">
-                Invoice ·{" "}
-                <span className="font-mono">#{data.invoiceNumber}</span>
+                {data.documentType} ·{" "}
+                <span className="font-mono">
+                  {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
+                </span>
               </div>
             </div>
           </div>
@@ -43,18 +52,16 @@ export default function InvoiceStyleC() {
         <div className="text-right">
           <div className="text-sm text-muted flex items-center justify-end gap-2">
             <Calendar className="w-4 h-4 text-slate-400" />
-            <span>{formatDate(data.issueDate)}</span>
+            <span>{data.issueDate ? formatDate(data.issueDate) : "-"}</span>
           </div>
 
-          {data.dueDate ? (
-            <div className="mt-1 text-sm text-muted">
-              Jatuh Tempo: {formatDate(data.dueDate)}
-            </div>
-          ) : null}
+          <div className="mt-1 text-sm text-muted">
+            Jatuh Tempo: {data.dueDate ? formatDate(data.dueDate) : "-"}
+          </div>
 
           <div className="mt-2 inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
             <FileText className="w-4 h-4" />
-            <span className="uppercase">Invoice</span>
+            <span className="uppercase">{data.documentType}</span>
           </div>
         </div>
       </div>
@@ -70,7 +77,7 @@ export default function InvoiceStyleC() {
           color: data.brand.color || DEFAULT_BRAND_COLOR,
         }}
       >
-        <div className="font-semibold">{data.client.name}</div>
+        <div className="font-semibold">{data.client?.name || "-"}</div>
       </div>
 
       <div
@@ -88,14 +95,12 @@ export default function InvoiceStyleC() {
           </div>
         </div>
 
-        {data.discountValue > 0 && (
-          <div className="flex justify-between items-center">
-            <div className="text-sm font-medium">Diskon</div>
-            <div className="text-sm font-semibold text-red-600">
-              -{formatCurrency(result.discountAmount)}
-            </div>
+        <div className="flex justify-between items-center">
+          <div className="text-sm font-medium">Diskon</div>
+          <div className="text-sm font-semibold text-red-600">
+            -{formatCurrency(result.discountAmount)}
           </div>
-        )}
+        </div>
 
         <div className="flex justify-between items-center">
           <div className="text-sm font-medium">Pajak {data.taxRate}%</div>
@@ -112,13 +117,11 @@ export default function InvoiceStyleC() {
 
       <div className="mt-4 flex flex-col items-end">
         <div className="text-2xl font-bold">{formatCurrency(result.total)}</div>
-        {data.status && data.status !== "DRAFT" ? (
-          <div className="mt-2">
-            <Badge color={data.status === "PAID" ? "success" : "muted"}>
-              {data.status === "PAID" ? "Lunas" : "Belum Dibayar"}
-            </Badge>
-          </div>
-        ) : null}
+        <div className="mt-2">
+          <Badge color={data.status === "PAID" ? "success" : "muted"}>
+            {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
+          </Badge>
+        </div>
       </div>
     </div>
   );

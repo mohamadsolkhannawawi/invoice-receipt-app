@@ -9,18 +9,7 @@ export default function HtmlPreview() {
   const { data } = useInvoiceStore();
   const result = calculateInvoiceTotal(data);
 
-  const title = data.documentType === "INVOICE" ? "FAKTUR" : "KUITANSI";
-
-  console.debug(
-    "HtmlPreview - issueDate:",
-    data.issueDate,
-    "dueDate:",
-    data.dueDate,
-    "issueDateType:",
-    typeof data.issueDate,
-    "isDate:",
-    data.issueDate instanceof Date
-  );
+  const title = data.documentType === "INVOICE" ? "INVOICE" : "RECEIPT";
 
   return (
     <div className="bg-card-bg rounded-xl p-5 shadow-soft-md border border-border max-w-md w-full">
@@ -28,7 +17,7 @@ export default function HtmlPreview() {
 
       {data.template === "STYLE_A" ? (
         <div className="text-sm text-muted mb-3">
-          {data.issueDate ? formatDate(data.issueDate) : ""}
+          {data.issueDate ? formatDate(data.issueDate) : "-"}
         </div>
       ) : null}
 
@@ -48,9 +37,9 @@ export default function HtmlPreview() {
               className="text-xl font-extrabold"
               style={{ color: data.brand.color || undefined }}
             >
-              {data.brand.name || ""}
+              {data.brand.name || "-"}
             </p>
-            <p className="text-sm text-muted">{data.brand.location}</p>
+            <p className="text-sm text-muted">{data.brand.location || "-"}</p>
             {data.brand.contact && (
               <p className="text-sm text-muted">{data.brand.contact}</p>
             )}
@@ -74,13 +63,11 @@ export default function HtmlPreview() {
           </div>
 
           <div className="mt-3 text-sm">
-            {data.invoiceNumber ? `#${data.invoiceNumber}` : ""}
+            {data.invoiceNumber ? `#${data.invoiceNumber}` : "-"}
           </div>
-          {data.dueDate ? (
-            <div className="mt-2 text-sm">
-              Jatuh Tempo :{formatDate(data.dueDate)}
-            </div>
-          ) : null}
+          <div className="mt-2 text-sm">
+            Jatuh Tempo :{data.dueDate ? formatDate(data.dueDate) : "-"}
+          </div>
         </div>
       </div>
 
@@ -90,7 +77,7 @@ export default function HtmlPreview() {
         style={{ backgroundColor: data.brand.color, color: "#fff" }}
       >
         <p className="font-bold">Ditujukan Kepada :</p>
-        <p className="mt-2">{data.client.name || ""}</p>
+        <p className="mt-2">{data.client?.name || "-"}</p>
       </div>
 
       <div
@@ -209,11 +196,11 @@ export default function HtmlPreview() {
         >
           <div style={{ fontSize: 18, fontWeight: 800 }}>Total</div>
           <div style={{ fontSize: 20, fontWeight: 800 }}>
-            {data.items.length > 0 ? formatCurrency(result.total) : ""}
+            {formatCurrency(result.total)}
           </div>
         </div>
 
-        {data.status && data.status !== "DRAFT" ? (
+        {data.documentType === "RECEIPT" ? (
           <div className="mt-6 flex justify-center">
             <div
               className="rounded-lg px-8 py-3"
@@ -223,10 +210,23 @@ export default function HtmlPreview() {
                 fontWeight: 700,
               }}
             >
-              {data.status === "PAID" ? "Lunas" : "Belum Dibayar"}
+              LUNAS
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="mt-6 flex justify-center">
+            <div
+              className="rounded-lg px-8 py-3"
+              style={{
+                backgroundColor: data.brand.color,
+                color: "#fff",
+                fontWeight: 700,
+              }}
+            >
+              {data.status === "PAID" ? "LUNAS" : "Belum Dibayar"}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
