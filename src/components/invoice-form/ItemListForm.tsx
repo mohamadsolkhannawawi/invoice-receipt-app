@@ -118,7 +118,7 @@ export default function ItemListForm() {
     <Card className="space-y-6 rounded-2xl p-6 shadow-md bg-white">
       <h3 className="text-xl font-semibold text-slate-800">Barang</h3>
 
-      {error ? (
+      {error && (
         <div
           role="alert"
           aria-live="polite"
@@ -126,10 +126,10 @@ export default function ItemListForm() {
         >
           {error}
         </div>
-      ) : null}
+      )}
 
-      {/* Header */}
-      <div className="grid grid-cols-12 gap-3 text-sm font-medium text-slate-600">
+      {/* Header (DESKTOP ONLY) */}
+      <div className="hidden md:grid grid-cols-12 gap-3 text-sm font-medium text-slate-600">
         <div className="col-span-6">Deskripsi</div>
         <div className="col-span-2 text-center">Jumlah</div>
         <div className="col-span-3 text-center">Harga</div>
@@ -141,8 +141,15 @@ export default function ItemListForm() {
         const disableDelete = rows.length === 1 || !row.description.trim();
 
         return (
-          <div key={index} className="grid grid-cols-12 gap-3 items-center">
-            <div className="col-span-6">
+          <div
+            key={index}
+            className="
+              grid grid-cols-1 gap-3
+              md:grid-cols-12 md:items-center
+            "
+          >
+            {/* Deskripsi */}
+            <div className="md:col-span-6">
               <Input
                 placeholder="Produk / Layanan"
                 value={row.description}
@@ -152,7 +159,8 @@ export default function ItemListForm() {
               />
             </div>
 
-            <div className="col-span-2">
+            {/* Jumlah */}
+            <div className="md:col-span-2">
               <NumberInput
                 min={1}
                 value={row.quantity}
@@ -160,7 +168,8 @@ export default function ItemListForm() {
               />
             </div>
 
-            <div className="col-span-3">
+            {/* Harga */}
+            <div className="md:col-span-3">
               <NumberInput
                 min={0}
                 value={row.unitPrice}
@@ -168,7 +177,8 @@ export default function ItemListForm() {
               />
             </div>
 
-            <div className="col-span-1 flex justify-center">
+            {/* Hapus */}
+            <div className="md:col-span-1 flex justify-end md:justify-center">
               <button
                 type="button"
                 onClick={() => removeRow(index)}
