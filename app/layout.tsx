@@ -11,14 +11,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <html lang="id">
             <head>
                 <title>Invoice Gen</title>
-                {/* Vector favicon (scales nicely) */}
                 <link
                     rel="icon"
                     href="/images/Logo.svg"
                     type="image/svg+xml"
                     sizes="any"
                 />
-                {/* PNG fallbacks for browsers that prefer raster icons */}
                 <link rel="icon" href="/images/Logo.png" sizes="32x32" />
                 <link rel="icon" href="/images/Logo.png" sizes="64x64" />
                 <link rel="apple-touch-icon" href="/images/Logo.png" />

@@ -7,10 +7,12 @@ export default function NotesForm() {
     const { data, updateField } = useInvoiceStore();
 
     return (
-        <Card>
-            <h3 className="text-lg font-semibold">Catatan Tambahan</h3>
+        <Card className="rounded-3xl space-y-4 bg-white w-full">
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-800">
+                Catatan Tambahan
+            </h3>
             <textarea
-                className="w-full mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm"
+                className="w-full mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 text-base"
                 placeholder="Catatan tambahan untuk pelanggan..."
                 value={data.notes}
                 onChange={(e) => updateField("notes", e.target.value)}

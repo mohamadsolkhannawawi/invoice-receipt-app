@@ -127,21 +127,23 @@ export default function Footer() {
 
                 {/* Downloads */}
                 <div>
-                    <h4 className="text-white font-semibold mb-4">Downloads</h4>
+                    <h4 className="text-white font-semibold mb-4 ml-10">
+                        Downloads
+                    </h4>
                     <div className="flex items-center gap-3 md:flex-col md:space-y-3">
                         <Image
                             src="/images/google-play.png"
                             alt="Google Play"
                             width={160}
                             height={48}
-                            className="cursor-pointer hover:opacity-80 w-36 md:w-auto h-auto"
+                            className="cursor-pointer hover:opacity-80 w-36 md:w-40 h-auto object-contain"
                         />
                         <Image
                             src="/images/app-store.svg"
                             alt="App Store"
                             width={160}
                             height={48}
-                            className="cursor-pointer hover:opacity-80 w-36 md:w-auto h-auto"
+                            className="cursor-pointer hover:opacity-80 w-36 md:w-40 h-auto object-contain"
                         />
                     </div>
                 </div>
