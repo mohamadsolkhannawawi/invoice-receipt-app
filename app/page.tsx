@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <main className="bg-page-bg overflow-hidden">
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-14 items-center">
+      <section className="max-w-6xl mx-auto px-6 pt-0 pb-2 grid lg:grid-cols-2 gap-14 items-center">
         <div>
           <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight mb-6">
             Buat Invoice & Receipt Profesional{" "}

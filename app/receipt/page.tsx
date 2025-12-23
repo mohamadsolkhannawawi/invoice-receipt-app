@@ -41,19 +41,19 @@ export default function ReceiptPage() {
   if (!hydrated || !hasHydrated) return null;
 
   return (
-    <main className="pt-0 pb-8 bg-page-bg min-h-screen">
+    <main className="pt-0 pb-1 bg-page-bg min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between pt-0 mb-0">
           <div>
-            <h1 className="text-2xl font-bold">Buat Receipt</h1>
+            <h1 className="text-2xl font-bold leading-tight">Buat Receipt</h1>
             <p className="text-sm text-muted">
-              Isi detailnya untuk membuat receipt resmi Anda
+              Isi detailnya untuk membuat receipt Professional Anda
             </p>
           </div>
         </div>
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-6 space-y-4 pr-2">
+          <div className="lg:col-span-6 space-y-4 pr-6">
             <div>
               <DocumentDetailForm />
             </div>
@@ -84,7 +84,7 @@ export default function ReceiptPage() {
           </div>
 
           <aside className="lg:col-span-6">
-            <div className="sticky top-20">
+            <div className="sticky top-16">
               <div className="mb-4">
                 <TemplateSwitcher />
               </div>

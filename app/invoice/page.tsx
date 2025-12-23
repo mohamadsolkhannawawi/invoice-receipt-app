@@ -42,7 +42,7 @@ export default function InvoicePage() {
   if (!hydrated || !hasHydrated) return null;
 
   return (
-    <main className="pt-0 pb-8 bg-page-bg min-h-screen">
+    <main className="pt-0 pb-1 bg-page-bg min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between pt-0 mb-0">
           <div>
@@ -54,7 +54,7 @@ export default function InvoicePage() {
         </div>
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-6 space-y-4 pr-2">
+          <div className="lg:col-span-6 space-y-4 pr-6">
             <DocumentDetailForm />
             <BrandInfoForm />
             <ClientInfoForm />

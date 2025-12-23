@@ -25,7 +25,7 @@ export default function Navbar() {
 
   return (
     <header className="border-b-2 border-orange-400 bg-white sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 py-2 md:py-3 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 py-2 flex items-center justify-between">
         <Logo />
 
         {/* Desktop nav */}
